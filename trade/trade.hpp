@@ -8,6 +8,7 @@ struct trade {
 
     double usedMargin;
     double borrowAccrued;
+    double urealizedPNL;
 
     timestamp timestamp;
 

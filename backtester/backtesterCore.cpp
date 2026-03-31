@@ -49,6 +49,7 @@ void backtesterCore::markOpenTradesToMarket(size_t idx){
         auto& trade = IdTrade.second;
         double marketPrice = dataLayer_.getValue(dataLayer_.makeField(trade.ticker, "open"), idx);
         double delta = account_.markToMarket(marketPrice,trade.price.avgPrice,trade.qty.filledQty,trade.type);
+        trade.urealizedPNL = delta;
         accruedUnrealizedPnl+=delta;
     }
     account_.updateUnrealizedPnl(accruedUnrealizedPnl);
@@ -63,16 +64,28 @@ void backtesterCore::checkEntry(size_t iteration,std::string& ticker,const std::
     }
 }
 
+bool backtesterCore::stopLossHit(trade& trade, double marketPrice){
+    if (trade.type == ordertype::Buy){
+        return (trade.price.stopLossPrice >= marketPrice);
+    } else return (trade.price.stopLossPrice <= marketPrice);
+}
+
 void backtesterCore::checkExit(size_t iteration,const std::vector<bool>& exit){
-    for (auto& [ID,iTrade]: openTrades_){
-        if (exit[iteration] == true){
-            iTrade.status = tradeStatus::CLOSED;
-            closedTrades_[ID] = iTrade;
+    for (auto it = openTrades_.begin(); it != openTrades_.end(); ) {
+        auto& [id, trade] = *it;
+        double price = dataLayer_.getValue(dataLayer_.makeField(trade.ticker, "open"), iteration);
+
+        if (exit[iteration] || stopLossHit(trade, price)) {
+            trade.status = tradeStatus::CLOSED;
+            account_.realizeTradePnL(trade.urealizedPNL);
+            setEntryExit(iteration,trade,action::Exit);
+            closedTrades_[id] = trade;
+            it = openTrades_.erase(it);
+        } else {
+            ++it;
         }
     }
 }
-
-
 
 void backtesterCore::execute(const std::string& ticker,const std::vector<bool>& entries,const std::vector<bool>& exits){
 
