@@ -16,7 +16,7 @@
 // ====================================================== //
 
 // ====================================================== //
-Interpreter::Interpreter(std::shared_ptr<ASTNode>& root, MarketDataView&& marketDataView)
+Interpreter::Interpreter(std::shared_ptr<ASTNode>& root, DataLayer&& marketDataView)
     : root_(std::move(root)), marketDataView_(std::move(marketDataView)), cfg_(&variables_)
 {
     strategy_blocks = {

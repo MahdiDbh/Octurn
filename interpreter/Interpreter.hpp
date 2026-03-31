@@ -8,7 +8,7 @@
 #include "types/types.hpp"
 #include "mappers/maps.hpp"
 #include "config/config.hpp"
-#include "marketDataView/MarketDataView.hpp"
+#include "dataLayer/DataLayer.hpp"
 
 
 using Octurn::AnyValue;
@@ -22,7 +22,7 @@ class Interpreter {
         // ============= Constructor + Run + Getters ============ //
         // ===== Constructor takes root pointer to the tree ===== //
 
-        Interpreter(std::shared_ptr<ASTNode>& root, MarketDataView&& marketDataView);
+        Interpreter(std::shared_ptr<ASTNode>& root, DataLayer&& marketDataView);
         void run();
 
         // ========== Getters for variables and flags =========== //
@@ -62,7 +62,7 @@ class Interpreter {
         std::shared_ptr<ASTNode> root_;
         std::unordered_map<std::string,AnyValue> variables_;
         std::unordered_map<std::string,bool> flags_;
-        MarketDataView marketDataView_;
+        DataLayer marketDataView_;
 
         // ==== Variable storage for each block ==== //
         config cfg_;

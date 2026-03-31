@@ -23,26 +23,6 @@ void backtesterCore::setEntryExit(size_t& i, trade& trade, action actiontype){
     }
 }
 
-void backtesterCore::checkEntryExit(size_t iteration,trade& trade_, bool& inTrade, const std::vector<bool>& entries, const std::vector<bool>& exits){
-    std::string tradeID = trade_.ID;
-    if (!inTrade){
-        if (entries[iteration] == true && exits[iteration] == false){
-            inTrade = true;
-            setEntryExit(iteration,trade_,action::Entry);
-            openTrades_[tradeID] = trade_;
-        }
-        else {
-            if (exits[iteration] == true){
-                setEntryExit(iteration,trade_,action::Exit);
-                closedTrades_[tradeID] = trade_;
-                openTrades_.erase(tradeID);
-                inTrade = false;
-                trade_ = trade(trade_.ticker);
-            }
-        }
-    }
-}
-
 void backtesterCore::markOpenTradesToMarket(size_t idx){
     double accruedUnrealizedPnl{0};
     for (auto& IdTrade:openTrades_){
@@ -100,7 +80,6 @@ void backtesterCore::execute(const std::string& ticker,const std::vector<bool>& 
     }
 
     for (size_t i = 0; i < vectSize - 1; i++){
-        checkEntryExit(i,trade,inTrade,entries,exits);
         if (!openTrades_.empty()){
             markOpenTradesToMarket(i);
         }
