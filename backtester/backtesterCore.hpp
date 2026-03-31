@@ -31,9 +31,9 @@ class backtesterCore {
         account account_; 
         backtesterCore(std::unordered_map<std::string, AnyValue>& data, config& cfg, DataLayer& dataLayer_, ExecutionEngine& executionLayer);
         void execute(const std::string& ticker,const std::vector<bool>& entries,const std::vector<bool>& exits);
-        void checkEntry(size_t iteration,std::string& ticker,const std::vector<bool>& entries);
+        void checkEntry(size_t iteration,std::string& ticker);
         void checkEntryExit(size_t iteration, trade& trade_, bool& inTrade, const std::unordered_map<std::string,std::vector<bool>>& entries, const std::vector<bool>& exits);
-        void checkExit(size_t iteration,const std::vector<bool>& exit);
+        void checkExit(size_t iteration);
         bool stopLossHit(trade& trade, double marketPrice);
         void markOpenTradesToMarket(size_t idx);
 };

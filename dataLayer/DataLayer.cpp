@@ -74,7 +74,7 @@ const std::unordered_map<std::string, AnyValue>& DataLayer::data() const {
 
 double DataLayer::getValue(const std::string& key, size_t idx) const {
     auto it = dataMap_.find(key);
-    if (it == dataMap_.end()) {
+    if (it == dataMap_.end()){
         throw std::runtime_error(std::format("Series {} not found", key));
     }
 

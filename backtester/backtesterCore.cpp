@@ -56,8 +56,9 @@ void backtesterCore::markOpenTradesToMarket(size_t idx){
     account_.updateEquity();
 }
 
-void backtesterCore::checkEntry(size_t iteration,std::string& ticker,const std::vector<bool>& entries){
-    if (entries[iteration] == true){
+void backtesterCore::checkEntry(size_t iteration,std::string& ticker){
+    auto tickerEntries = data_.find(dataLayer_.makeField(ticker,"entries"));
+    if (std::get<std::vector<bool>>(tickerEntries->second)[iteration] == true){
         trade openTrade = trade(ticker);
         setEntryExit(iteration,openTrade,action::Entry);
         openTrades_[openTrade.ID] = openTrade;
@@ -70,12 +71,14 @@ bool backtesterCore::stopLossHit(trade& trade, double marketPrice){
     } else return (trade.price.stopLossPrice <= marketPrice);
 }
 
-void backtesterCore::checkExit(size_t iteration,const std::vector<bool>& exit){
+void backtesterCore::checkExit(size_t iteration){
     for (auto it = openTrades_.begin(); it != openTrades_.end(); ) {
         auto& [id, trade] = *it;
-        double price = dataLayer_.getValue(dataLayer_.makeField(trade.ticker, "open"), iteration);
 
-        if (exit[iteration] || stopLossHit(trade, price)) {
+        const auto tickerExits = data_.find(dataLayer_.makeField(trade.ticker,"exits"));
+        const double price = dataLayer_.getValue(dataLayer_.makeField(trade.ticker, "open"), iteration);
+
+        if (std::get<std::vector<bool>>(tickerExits->second)[iteration] == true || stopLossHit(trade, price)) {
             trade.status = tradeStatus::CLOSED;
             account_.realizeTradePnL(trade.urealizedPNL);
             setEntryExit(iteration,trade,action::Exit);
