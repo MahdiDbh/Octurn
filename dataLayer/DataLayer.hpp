@@ -10,7 +10,7 @@
 
 struct ASTList;
 
-class MarketDataView {
+class DataLayer {
 private:
     polygonDataFeed feeder_;
     std::unordered_map<std::string, Octurn::AnyValue> dataMap_;
@@ -20,8 +20,8 @@ public:
     static std::string makeField(const std::string& ticker, const std::string& field);
     Bar getBar(const std::string& ticker, size_t idx);
 
-    explicit MarketDataView(const std::string& apiKey);
-    explicit MarketDataView(polygonDataFeed&& feeder);
+    explicit DataLayer(const std::string& apiKey);
+    explicit DataLayer(polygonDataFeed&& feeder);
 
     void extract(const std::shared_ptr<ASTList>& list);
     std::unordered_map<std::string, Octurn::AnyValue>& data();

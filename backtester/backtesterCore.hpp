@@ -7,7 +7,7 @@
 #include "trade/trade.hpp"
 #include "account/account.hpp"
 #include "execution/ExecutionEngine.hpp"
-#include "marketDataView/MarketDataView.hpp"
+#include "dataLayer/DataLayer.hpp"
 
 class backtesterCore {
     private:
@@ -17,7 +17,7 @@ class backtesterCore {
         std::unordered_map<std::string,trade> closedTrades_;
         std::vector<std::string> timestampVec_;
         ExecutionEngine executionLayer_;
-        MarketDataView marketViewer_;
+        DataLayer dataLayer_;
 
         
         size_t maxSize_;
@@ -29,8 +29,10 @@ class backtesterCore {
     public:
         config cfg_;
         account account_; 
-        backtesterCore(std::unordered_map<std::string, AnyValue>& data, config& cfg, MarketDataView& viewer, ExecutionEngine& executionLayer);
+        backtesterCore(std::unordered_map<std::string, AnyValue>& data, config& cfg, DataLayer& dataLayer_, ExecutionEngine& executionLayer);
         void execute(const std::string& ticker,const std::vector<bool>& entries,const std::vector<bool>& exits);
+        void checkEntry(size_t iteration,std::string& ticker,const std::vector<bool>& entries);
         void checkEntryExit(size_t iteration, trade& trade_, bool& inTrade, const std::vector<bool>& entries, const std::vector<bool>& exits);
+        void checkExit(size_t iteration,const std::vector<bool>& exit);
         void markOpenTradesToMarket(size_t idx);
 };

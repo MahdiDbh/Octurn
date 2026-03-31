@@ -3,7 +3,7 @@
 
 #define MIN_BARS_REQ 2
 
-backtesterCore::backtesterCore(std::unordered_map<std::string, AnyValue>& data, config& cfg, MarketDataView& viewer,ExecutionEngine& executionLayer) : data_(std::move(data)), cfg_(std::move(cfg)), account_(account(cfg_.equity)), marketViewer_(viewer), executionLayer_(executionLayer) {
+backtesterCore::backtesterCore(std::unordered_map<std::string, AnyValue>& data, config& cfg, DataLayer& viewer,ExecutionEngine& executionLayer) : data_(std::move(data)), cfg_(std::move(cfg)), account_(account(cfg_.equity)), dataLayer_(viewer), executionLayer_(executionLayer) {
     timestampVec_ = *std::get_if<std::vector<std::string>>(&data_["timestamp"]);
     maxSize_ = timestampVec_.size();
     openTrades_.reserve(maxSize_);
@@ -28,9 +28,9 @@ void backtesterCore::checkEntryExit(size_t iteration,trade& trade_, bool& inTrad
     if (!inTrade){
         if (entries[iteration] == true && exits[iteration] == false){
             inTrade = true;
+            setEntryExit(iteration,trade_,action::Entry);
             openTrades_[tradeID] = trade_;
-            setEntryExit(iteration,trade_,action::Entry);}
-        } 
+        }
         else {
             if (exits[iteration] == true){
                 setEntryExit(iteration,trade_,action::Exit);
@@ -40,13 +40,14 @@ void backtesterCore::checkEntryExit(size_t iteration,trade& trade_, bool& inTrad
                 trade_ = trade(trade_.ticker);
             }
         }
+    }
 }
 
 void backtesterCore::markOpenTradesToMarket(size_t idx){
     double accruedUnrealizedPnl{0};
     for (auto& IdTrade:openTrades_){
         auto& trade = IdTrade.second;
-        double marketPrice = executionLayer_.getValue(marketViewer_.makeField(trade.ticker, "open"), idx);
+        double marketPrice = dataLayer_.getValue(dataLayer_.makeField(trade.ticker, "open"), idx);
         double delta = account_.markToMarket(marketPrice,trade.price.avgPrice,trade.qty.filledQty,trade.type);
         accruedUnrealizedPnl+=delta;
     }
@@ -54,10 +55,26 @@ void backtesterCore::markOpenTradesToMarket(size_t idx){
     account_.updateEquity();
 }
 
-void backtesterCore::execute(const std::string& ticker,const std::vector<bool>& entries,const std::vector<bool>& exits){
+void backtesterCore::checkEntry(size_t iteration,std::string& ticker,const std::vector<bool>& entries){
+    if (entries[iteration] == true){
+        trade openTrade = trade(ticker);
+        setEntryExit(iteration,openTrade,action::Entry);
+        openTrades_[openTrade.ID] = openTrade;
+    }
+}
 
-    bool inTrade{false};
-    trade trade(ticker);
+void backtesterCore::checkExit(size_t iteration,const std::vector<bool>& exit){
+    for (auto& [ID,iTrade]: openTrades_){
+        if (exit[iteration] == true){
+            iTrade.status = tradeStatus::CLOSED;
+            closedTrades_[ID] = iTrade;
+        }
+    }
+}
+
+
+
+void backtesterCore::execute(const std::string& ticker,const std::vector<bool>& entries,const std::vector<bool>& exits){
 
     size_t vectSize{entries.size()};
 

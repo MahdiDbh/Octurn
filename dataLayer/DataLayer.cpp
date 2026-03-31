@@ -1,4 +1,4 @@
-#include "MarketDataView.hpp"
+#include "DataLayer.hpp"
 
 #include <format>
 #include <stdexcept>
@@ -9,15 +9,15 @@
 
 using Octurn::AnyValue;
 
-MarketDataView::MarketDataView(const std::string& apiKey) : feeder_(polygonClient(apiKey)) {}
+DataLayer::DataLayer(const std::string& apiKey) : feeder_(polygonClient(apiKey)) {}
 
-MarketDataView::MarketDataView(polygonDataFeed&& feeder) : feeder_(std::move(feeder)) {}
+DataLayer::DataLayer(polygonDataFeed&& feeder) : feeder_(std::move(feeder)) {}
 
-std::string MarketDataView::makeField(const std::string& ticker, const std::string& field) {
+std::string DataLayer::makeField(const std::string& ticker, const std::string& field) {
     return ticker + "_" + field;
 }
 
-Bar MarketDataView::getBar(const std::string& ticker, size_t idx) {
+Bar DataLayer::getBar(const std::string& ticker, size_t idx) {
     return {
         .open   = getValue(makeField(ticker, "open"), idx),
         .high   = getValue(makeField(ticker, "high"), idx),
@@ -27,7 +27,7 @@ Bar MarketDataView::getBar(const std::string& ticker, size_t idx) {
     };
 }
 
-void MarketDataView::extract(const std::shared_ptr<ASTList>& list) {
+void DataLayer::extract(const std::shared_ptr<ASTList>& list) {
     if (!list) {
         return;
     }
@@ -64,15 +64,15 @@ void MarketDataView::extract(const std::shared_ptr<ASTList>& list) {
     }
 }
 
-std::unordered_map<std::string, AnyValue>& MarketDataView::data() {
+std::unordered_map<std::string, AnyValue>& DataLayer::data() {
     return dataMap_;
 }
 
-const std::unordered_map<std::string, AnyValue>& MarketDataView::data() const {
+const std::unordered_map<std::string, AnyValue>& DataLayer::data() const {
     return dataMap_;
 }
 
-double MarketDataView::getValue(const std::string& key, size_t idx) const {
+double DataLayer::getValue(const std::string& key, size_t idx) const {
     auto it = dataMap_.find(key);
     if (it == dataMap_.end()) {
         throw std::runtime_error(std::format("Series {} not found", key));

@@ -2,7 +2,7 @@
 
 account::account(double equity) : equity(equity), freeCash(equity), reservedMargin(0.0) {
     profitAndLoss.realizedPnL = 0.0;
-    profitAndLoss.realizedPnL = 0.0;
+    profitAndLoss.unrealizedPnL = 0.0;
 }
 
 void account::updateEquity(){
