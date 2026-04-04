@@ -1,4 +1,6 @@
 #include "DataLayer.hpp"
+#include <regex>
+#include <algorithm>
 
 #include <format>
 #include <stdexcept>
@@ -62,6 +64,42 @@ void DataLayer::extract(const std::shared_ptr<ASTList>& list) {
         auto fetched = feeder_.loadBars(ticker, multiplier, from, to, timespan);
         dataMap_.merge(std::move(fetched));
     }
+}
+
+stampIdx DataLayer::exploreLength(){
+    bool initialized{false};
+
+    uint64_t stampMin{};
+    uint64_t stampMax{};
+
+    for (const auto& [k,v]:dataMap_){
+        if (!k.ends_with("_timestamp")) {
+            continue;
+        }
+
+        const auto* ts = std::get_if<std::vector<uint64_t>>(&v);
+        if (!ts || ts->empty()) {
+            continue;
+        }
+
+        uint64_t minCandidate{ts->front()};
+        uint64_t maxCandidate{ts->back()};
+
+        if (initialized){
+            stampMin = std::min(stampMin,minCandidate);
+            stampMax = std::max(stampMax,maxCandidate);
+        } else {
+            stampMin = minCandidate;
+            stampMax = maxCandidate;
+            initialized = true;
+        }
+    }
+
+    if (!initialized){
+        throw std::runtime_error("Timestamp vectors are empty");
+    }
+
+    return {stampMin,stampMax};
 }
 
 std::unordered_map<std::string, AnyValue>& DataLayer::data() {

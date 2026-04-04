@@ -1,5 +1,6 @@
 #pragma once
 #include <cstddef>
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -8,13 +9,15 @@
 #include "src/polygon/polygonDataFeed.hpp"
 #include "marketTypes/marketTypes.hpp"
 
-struct ASTList;
+struct stampIdx{
+    uint64_t earliestStamp;
+    uint64_t latestStamp;
+};
 
 class DataLayer {
 private:
     polygonDataFeed feeder_;
     std::unordered_map<std::string, Octurn::AnyValue> dataMap_;
-
 public:
 
     static std::string makeField(const std::string& ticker, const std::string& field);
@@ -27,4 +30,5 @@ public:
     std::unordered_map<std::string, Octurn::AnyValue>& data();
     const std::unordered_map<std::string, Octurn::AnyValue>& data() const;
     double getValue(const std::string& key, size_t idx) const;
+    stampIdx exploreLength();
 };

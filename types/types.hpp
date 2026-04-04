@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <variant>
 #include <vector>
+#include <cstdint>
 
 // ==== Global forward declaration ==== //
 struct ASTNode;
@@ -19,8 +20,8 @@ namespace Octurn {
     using taFunctionCall = std::function<std::vector<double>(const multiValue& args,
                                                              std::unordered_map<std::string,AnyValue>& variables_,std::unordered_map<std::string, AnyValue>& data_)>;
 
-    struct AnyValue : std::variant<double, bool, std::string, multiValue, std::vector<double>,std::vector<bool>,std::vector<int>> {
-        using base = std::variant<double, bool, std::string, multiValue, std::vector<double>,std::vector<bool>,std::vector<int>>;
+    struct AnyValue : std::variant<double, bool, uint64_t, std::string, multiValue, std::vector<double>,std::vector<bool>,std::vector<int>,std::vector<uint64_t>>{
+        using base = std::variant<double, bool, uint64_t, std::string, multiValue, std::vector<double>,std::vector<bool>,std::vector<int>,std::vector<uint64_t>>;
         using base::base;
     };
 

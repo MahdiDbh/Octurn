@@ -1,5 +1,6 @@
 #include "polygonDataFeed.hpp"
 #include <iostream>
+#include <cstdint>
 
 polygonDataFeed::polygonDataFeed(polygonClient&& client) : client_(std::move(client)) {};
 
@@ -7,7 +8,8 @@ std::unordered_map<std::string, AnyValue> polygonDataFeed::loadBars(const std::s
     
     nlohmann::json json = client_.fetchData(ticker,multiplier,from,to,timespan);
 
-    std::vector<double> open, high, low, close, volume, timestamp;
+    std::vector<double> open, high, low, close, volume;
+    std::vector<uint64_t> timestamp;
 
     auto n = json["results"].size();
     open.reserve(n);
@@ -23,7 +25,7 @@ std::unordered_map<std::string, AnyValue> polygonDataFeed::loadBars(const std::s
         low.emplace_back(bar["l"].get<double>());
         close.emplace_back(bar["c"].get<double>());
         volume.emplace_back(bar["v"].get<double>());
-        timestamp.emplace_back(static_cast<double>(bar["t"].get<int64_t>()));
+        timestamp.emplace_back(bar["t"].get<uint64_t>());
     }
 
     const auto base = ticker + "_";
