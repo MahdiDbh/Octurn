@@ -2,6 +2,7 @@
 #include <regex>
 #include <algorithm>
 
+#include <algorithm>
 #include <format>
 #include <stdexcept>
 #include <utility>
@@ -68,7 +69,34 @@ void DataLayer::extract(const std::shared_ptr<ASTList>& list) {
     }
 }
 
-void DataLayer::exploreLength(){
+void DataLayer::masterTimestamps(){
+    std::vector<uint64_t> master;
+    for (const auto& [k,v]:dataMap_){
+        if (!k.ends_with("_timestamp")) {
+            continue;
+        }
+
+        const auto* ts = std::get_if<std::vector<uint64_t>>(&v);
+        if (!ts || ts->empty()) {
+            continue;
+        }
+
+        for (size_t i = 0; i<ts->size();i++){
+            master.emplace_back((*ts)[i]);
+        }
+    }
+
+    if (master.empty()){
+        throw std::runtime_error("Timestamp vectors are empty");
+    }
+
+    std::sort(master.begin(),master.end());
+    master.erase(std::unique(master.begin(),master.end()),master.end());
+    masterTimestamps_ = std::move(master);
+
+}
+
+void DataLayer::setTimestampBounds(){
     bool initialized{false};
 
     uint64_t stampMin{};

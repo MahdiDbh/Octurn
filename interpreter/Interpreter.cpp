@@ -157,7 +157,7 @@ void Interpreter::eval_program(const std::shared_ptr<ASTRoot>& root){
         g_logger.report("[INTERPRETER] Data fetch started.");
         auto data_block = std::dynamic_pointer_cast<ASTList>(root->data);
         marketDataView_.extract(data_block);
-        marketDataView_.exploreLength();
+        marketDataView_.setTimestampBounds();
     }
 
     if (root->strategy){
