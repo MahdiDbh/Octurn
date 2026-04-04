@@ -13,7 +13,9 @@ using Octurn::AnyValue;
 
 DataLayer::DataLayer(const std::string& apiKey) : feeder_(polygonClient(apiKey)) {}
 
-DataLayer::DataLayer(polygonDataFeed&& feeder) : feeder_(std::move(feeder)) {}
+DataLayer::DataLayer(polygonDataFeed&& feeder) : feeder_(std::move(feeder)) {
+
+}
 
 std::string DataLayer::makeField(const std::string& ticker, const std::string& field) {
     return ticker + "_" + field;
@@ -66,7 +68,7 @@ void DataLayer::extract(const std::shared_ptr<ASTList>& list) {
     }
 }
 
-stampIdx DataLayer::exploreLength(){
+void DataLayer::exploreLength(){
     bool initialized{false};
 
     uint64_t stampMin{};
@@ -99,7 +101,7 @@ stampIdx DataLayer::exploreLength(){
         throw std::runtime_error("Timestamp vectors are empty");
     }
 
-    return {stampMin,stampMax};
+    timeStampBounds_ = {stampMin,stampMax};
 }
 
 std::unordered_map<std::string, AnyValue>& DataLayer::data() {
