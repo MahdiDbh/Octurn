@@ -4,4 +4,5 @@ inline std::string polygonURL(std::string& ticker,int multiplier, std::string& f
     std::string url = "https://api.polygon.io/v2/aggs/ticker/" + ticker +
                       "/range/" + std::to_string(multiplier) + "/" + timespan +
                       "/" + from + "/" + to;
+    return url;
 }

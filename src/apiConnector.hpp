@@ -12,4 +12,4 @@ struct connector {
     int multiplier;
 };
 
-extern std::unordered_map<std::string,std::function<std::string&>(connector connector)> apiMapper;
+extern std::unordered_map<std::string,std::function<std::string&>(connector& connector)> apiMapper;
