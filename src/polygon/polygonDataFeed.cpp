@@ -12,11 +12,11 @@ std::unordered_map<std::string, AnyValue> polygonDataFeed::loadBars(const std::s
     std::vector<uint64_t> timestamp;
 
     auto n = json["results"].size();
-    open.reserve(n);
-    high.reserve(n);
-    low.reserve(n);
-    close.reserve(n);
-    volume.reserve(n);
+
+    for (auto& marketElement: {&open,&high,&low,&close,&volume}){
+        marketElement->reserve(n);
+    }
+
     timestamp.reserve(n);
 
     for (const auto& bar : json["results"]) {
@@ -27,15 +27,4 @@ std::unordered_map<std::string, AnyValue> polygonDataFeed::loadBars(const std::s
         volume.emplace_back(bar["v"].get<double>());
         timestamp.emplace_back(bar["t"].get<uint64_t>());
     }
-
-    const auto base = ticker + "_";
-    std::unordered_map<std::string, AnyValue> dataMapVec;
-    dataMapVec[base + "open"] = AnyValue{std::move(open)};
-    dataMapVec[base + "high"] = AnyValue{std::move(high)};
-    dataMapVec[base + "low"] = AnyValue{std::move(low)};
-    dataMapVec[base + "close"] = AnyValue{std::move(close)};
-    dataMapVec[base + "volume"] = AnyValue{std::move(volume)};
-    dataMapVec[base + "timestamp"] = AnyValue{std::move(timestamp)};
-
-    return dataMapVec;
 }

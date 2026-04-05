@@ -1,5 +1,6 @@
 #pragma once
 #include <nlohmann/json.hpp>
+#include "equity/equity.hpp"
 #include <unordered_map>
 #include <string>
 #include <vector>
