@@ -4,10 +4,13 @@
 #include <memory>
 #include <string>
 #include <unordered_map>
+#include <nlohmann/json.hpp>
 
 #include "types/types.hpp"
+#include "equity/equity.hpp"
 #include "src/polygon/polygonDataFeed.hpp"
 #include "marketTypes/marketTypes.hpp"
+#include "injector/DataInjector.hpp"
 
 struct stampIdx{
     uint64_t earliestStamp;
@@ -16,10 +19,11 @@ struct stampIdx{
 
 class DataLayer {
 private:
-    polygonDataFeed feeder_;
-    std::unordered_map<std::string, Octurn::AnyValue> dataMap_;
+    DataInjector injector_;
+    std::unordered_map<std::string, Equity> equityMap_;
     stampIdx timeStampBounds_;
     std::vector<uint64_t> masterTimestamps_;
+    nlohmann::json JSON_;
 public:
 
     static std::string makeField(const std::string& ticker, const std::string& field);
