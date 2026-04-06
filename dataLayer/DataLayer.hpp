@@ -24,7 +24,6 @@ private:
     std::unordered_map<std::string, Equity> equityMap_;
     stampIdx timeStampBounds_;
     std::vector<uint64_t> masterTimestamps_;
-    nlohmann::json JSON_;
 public:
 
     static std::string makeField(const std::string& ticker, const std::string& field);

@@ -9,12 +9,12 @@ class DataInjector {
 private:
     std::string APIKEY_;
     std::string source_;
-    
+
     connector connector_;
-    nlohmann::json* JSON_; 
+    nlohmann::json JSON_; 
     Octurn::EquityMap* ingestionPtr_;
 public:
-    DataInjector(std::string& APIKEY, Octurn::EquityMap*& ingestionPtr, std::string& source,connector& connector, nlohmann::json*& JSON);
+    DataInjector(std::string& APIKEY, Octurn::EquityMap*& ingestionPtr, std::string& source,connector& connector);
     void requestEquityData();
-    void ingestBarsEquity(std::string& ticker);
+    void ingestBarsEquity(const std::string& ticker);
 };
