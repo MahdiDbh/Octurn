@@ -9,6 +9,7 @@ class DataInjector {
 private:
     std::string APIKEY_;
     std::string source_;
+    
     connector connector_;
     nlohmann::json* JSON_; 
     Octurn::EquityMap* ingestionPtr_;

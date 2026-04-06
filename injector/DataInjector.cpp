@@ -28,7 +28,6 @@ void DataInjector::ingestBarsEquity(std::string& ticker){
     std::vector<uint64_t> timestamp;
 
     auto n = (*JSON_)["results"].size();
-    std::unordered_map<std::string, Equity> asset;
 
     for (auto& marketElement: {&open,&high,&low,&close,&volume}){
         marketElement->reserve(n);
@@ -44,4 +43,14 @@ void DataInjector::ingestBarsEquity(std::string& ticker){
         volume.emplace_back(bar["v"].get<double>());
         timestamp.emplace_back(bar["t"].get<uint64_t>());
     }
+
+    Equity asset = Equity(open,high,low,close,volume,timestamp);
+    asset.assetData_["open"] = std::move(open);
+    asset.assetData_["high"] = std::move(high);
+    asset.assetData_["low"] = std::move(low);
+    asset.assetData_["close"] = std::move(close);
+    asset.assetData_["volume"] = std::move(volume);
+    asset.assetData_["timestamp"] = std::move(timestamp);
+
+    (*ingestionPtr_)[ticker] = asset;
 }
