@@ -8,6 +8,8 @@
 #include <vector>
 #include <cstdint>
 
+#include "equity/equity.hpp"
+
 // ==== Global forward declaration ==== //
 struct ASTNode;
 
@@ -15,6 +17,7 @@ namespace Octurn {
     // =================== Namespaces here ================== //
     struct AnyValue;
     using multiValue = std::vector<AnyValue>;
+    using EquityMap = std::unordered_map<std::string, Equity>;
     
     using NodeMap = std::map<std::string, std::shared_ptr<ASTNode>>;
     using taFunctionCall = std::function<std::vector<double>(const multiValue& args,

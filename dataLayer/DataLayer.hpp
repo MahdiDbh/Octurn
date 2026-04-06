@@ -12,6 +12,7 @@
 #include "marketTypes/marketTypes.hpp"
 #include "injector/DataInjector.hpp"
 
+
 struct stampIdx{
     uint64_t earliestStamp;
     uint64_t latestStamp;

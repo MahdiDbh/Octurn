@@ -1,7 +1,8 @@
 #include "DataInjector.hpp"
 
 
-DataInjector::DataInjector(std::string& APIKEY, std::string& source, connector& connector, nlohmann::json*& JSON) : APIKEY_(std::move(APIKEY)), source_(std::move(source)), connector_(connector),JSON_(JSON){}
+DataInjector::DataInjector(std::string& APIKEY, Octurn::EquityMap*& ingestionPtr, std::string& source, connector& connector, nlohmann::json*& JSON) : APIKEY_(std::move(APIKEY)), source_(std::move(source)), 
+                            connector_(connector),JSON_(JSON),ingestionPtr_(ingestionPtr){}
 
 void DataInjector::requestEquityData(){
     auto it = apiMapper.find(source_);
@@ -20,7 +21,7 @@ void DataInjector::requestEquityData(){
     }
 }
 
-std::unordered_map<std::string, Equity> DataInjector::ingestBarsEquity(std::string& ticker){
+void DataInjector::ingestBarsEquity(std::string& ticker){
     requestEquityData();
 
     std::vector<double> open, high, low, close, volume;
