@@ -12,17 +12,10 @@
 #include "marketTypes/marketTypes.hpp"
 #include "injector/DataInjector.hpp"
 
-
-struct stampIdx{
-    uint64_t earliestStamp;
-    uint64_t latestStamp;
-};
-
 class DataLayer {
 private:
     DataInjector injector_;
     Octurn::EquityMap equityMap_;
-    stampIdx timeStampBounds_;
     std::vector<uint64_t> masterTimestamps_;
 public:
 
