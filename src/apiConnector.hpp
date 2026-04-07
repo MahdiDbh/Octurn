@@ -4,11 +4,10 @@
 
 
 struct connector {
-    std::string& ticker;
-    std::string& from;
-    std::string& to;
-    std::string& timespan;
-
+    std::string ticker;
+    std::string from;
+    std::string to;
+    std::string timespan;
     int multiplier;
 };
 
