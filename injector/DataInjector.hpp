@@ -14,7 +14,7 @@ private:
     nlohmann::json JSON_; 
     Octurn::EquityMap* ingestionPtr_;
 public:
-    DataInjector(std::string& APIKEY, Octurn::EquityMap*& ingestionPtr, std::string& source,connector& connector);
+    DataInjector(const std::string& APIKEY, Octurn::EquityMap* ingestionPtr, const std::string& source,const connector& connector);
     void requestEquityData();
     void ingestBarsEquity(const std::string& ticker);
 };

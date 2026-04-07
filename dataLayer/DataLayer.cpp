@@ -12,25 +12,8 @@
 
 using Octurn::AnyValue;
 
-DataLayer::DataLayer(const std::string& apiKey) : feeder_(polygonClient(apiKey)) {}
-
-DataLayer::DataLayer(polygonDataFeed&& feeder) : feeder_(std::move(feeder)) {
-
-}
-
-std::string DataLayer::makeField(const std::string& ticker, const std::string& field) {
-    return ticker + "_" + field;
-}
-
-Bar DataLayer::getBar(const std::string& ticker, size_t idx) {
-    return {
-        .open   = getValue(makeField(ticker, "open"), idx),
-        .high   = getValue(makeField(ticker, "high"), idx),
-        .low    = getValue(makeField(ticker, "low"), idx),
-        .close  = getValue(makeField(ticker, "close"), idx),
-        .volume = getValue(makeField(ticker, "volume"), idx)
-    };
-}
+DataLayer::DataLayer(const std::string& APIKEY, const std::string& source,const connector& connector)
+: injector_(APIKEY, &equityMap_, source, connector) {}
 
 void DataLayer::extract(const std::shared_ptr<ASTList>& list) {
     if (!list) {
@@ -63,26 +46,21 @@ void DataLayer::extract(const std::shared_ptr<ASTList>& list) {
         if (ticker.empty()) {
             throw std::runtime_error("No ticker found");
         }
-
-        auto fetched = feeder_.loadBars(ticker, multiplier, from, to, timespan);
-        dataMap_.merge(std::move(fetched));
     }
 }
 
 void DataLayer::masterTimestamps(){
     std::vector<uint64_t> master;
-    for (const auto& [k,v]:dataMap_){
-        if (!k.ends_with("_timestamp")) {
+    for (const auto& [ticker,equity]:equityMap_){
+
+        const auto ts = equity.symbol_.timestamp;
+        
+        if (ts.empty()) {
             continue;
         }
 
-        const auto* ts = std::get_if<std::vector<uint64_t>>(&v);
-        if (!ts || ts->empty()) {
-            continue;
-        }
-
-        for (size_t i = 0; i<ts->size();i++){
-            master.emplace_back((*ts)[i]);
+        for (size_t i = 0; i<ts.size();i++){
+            master.emplace_back(ts[i]);
         }
     }
 
@@ -94,63 +72,4 @@ void DataLayer::masterTimestamps(){
     master.erase(std::unique(master.begin(),master.end()),master.end());
     masterTimestamps_ = std::move(master);
 
-}
-
-void DataLayer::setTimestampBounds(){
-    bool initialized{false};
-
-    uint64_t stampMin{};
-    uint64_t stampMax{};
-
-    for (const auto& [k,v]:dataMap_){
-        if (!k.ends_with("_timestamp")) {
-            continue;
-        }
-
-        const auto* ts = std::get_if<std::vector<uint64_t>>(&v);
-        if (!ts || ts->empty()) {
-            continue;
-        }
-
-        uint64_t minCandidate{ts->front()};
-        uint64_t maxCandidate{ts->back()};
-
-        if (initialized){
-            stampMin = std::min(stampMin,minCandidate);
-            stampMax = std::max(stampMax,maxCandidate);
-        } else {
-            stampMin = minCandidate;
-            stampMax = maxCandidate;
-            initialized = true;
-        }
-    }
-
-    if (!initialized){
-        throw std::runtime_error("Timestamp vectors are empty");
-    }
-
-    timeStampBounds_ = {stampMin,stampMax};
-}
-
-std::unordered_map<std::string, AnyValue>& DataLayer::data() {
-    return dataMap_;
-}
-
-const std::unordered_map<std::string, AnyValue>& DataLayer::data() const {
-    return dataMap_;
-}
-
-double DataLayer::getValue(const std::string& key, size_t idx) const {
-    auto it = dataMap_.find(key);
-    if (it == dataMap_.end()){
-        throw std::runtime_error(std::format("Series {} not found", key));
-    }
-
-    const auto& series = std::get<std::vector<double>>(it->second);
-
-    if (idx >= series.size()) {
-        throw std::runtime_error("Index out of bounds");
-    }
-
-    return series[idx];
 }

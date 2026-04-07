@@ -7,6 +7,8 @@ Equity::Equity(std::vector<double>&& open,std::vector<double>&& high,std::vector
     symbol_.close = std::move(close);
     symbol_.volume = std::move(volume);
     symbol_.timestamp = std::move(timestamp);
+
+    constructTimestampIdxMap();
 }
 
 void Equity::constructTimestampIdxMap(){

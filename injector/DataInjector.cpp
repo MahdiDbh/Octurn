@@ -1,8 +1,10 @@
 #include "DataInjector.hpp"
 
 
-DataInjector::DataInjector(std::string& APIKEY, Octurn::EquityMap*& ingestionPtr, std::string& source, connector& connector) : APIKEY_(std::move(APIKEY)), source_(std::move(source)), 
-                            connector_(connector),ingestionPtr_(ingestionPtr){}
+DataInjector::DataInjector(const std::string& APIKEY, Octurn::EquityMap* ingestionPtr, const std::string& source, const connector& connector) : APIKEY_(std::move(APIKEY)), source_(std::move(source)), 
+                            connector_(connector),ingestionPtr_(ingestionPtr){
+    requestEquityData();
+}
 
 void DataInjector::requestEquityData(){
     auto it = apiMapper.find(source_);
@@ -22,7 +24,6 @@ void DataInjector::requestEquityData(){
 }
 
 void DataInjector::ingestBarsEquity(const std::string& ticker){
-    requestEquityData();
 
     std::vector<double> open, high, low, close, volume;
     std::vector<uint64_t> timestamp;
@@ -45,7 +46,7 @@ void DataInjector::ingestBarsEquity(const std::string& ticker){
     }
 
     ingestionPtr_->try_emplace(ticker, Equity(std::move(open), std::move(high),
-                                         std::move(low), std::move(close),
-                                         std::move(volume), std::move(timestamp)));
+                                std::move(low), std::move(close),
+                                std::move(volume), std::move(timestamp)));
 
 }

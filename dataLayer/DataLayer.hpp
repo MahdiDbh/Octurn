@@ -21,21 +21,13 @@ struct stampIdx{
 class DataLayer {
 private:
     DataInjector injector_;
-    std::unordered_map<std::string, Equity> equityMap_;
+    Octurn::EquityMap equityMap_;
     stampIdx timeStampBounds_;
     std::vector<uint64_t> masterTimestamps_;
 public:
 
-    static std::string makeField(const std::string& ticker, const std::string& field);
-    Bar getBar(const std::string& ticker, size_t idx);
-
-    explicit DataLayer(const std::string& apiKey);
-    explicit DataLayer(polygonDataFeed&& feeder);
+    DataLayer(const std::string& APIKEY, const std::string& source,const connector& connector);
 
     void extract(const std::shared_ptr<ASTList>& list);
-    std::unordered_map<std::string, Octurn::AnyValue>& data();
-    const std::unordered_map<std::string, Octurn::AnyValue>& data() const;
-    double getValue(const std::string& key, size_t idx) const;
-    void setTimestampBounds();
     void masterTimestamps();
 };
