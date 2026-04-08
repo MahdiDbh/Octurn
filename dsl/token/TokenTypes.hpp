@@ -2,6 +2,7 @@ enum class tokenType{
     // SPECIAL
     EndOfFile,
     NewLine,
+    Unknown,
 
     // BOOLEAN
     And,
@@ -20,6 +21,11 @@ enum class tokenType{
     Comma,
     Percent,
 
+    // ARITHMETIC
+    Minus,
+    Plus,
+    Divide,
+    Multiply,
 
     // COMPARISON OPERATORS
     LessThan,

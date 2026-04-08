@@ -22,14 +22,12 @@ inline std::unordered_map<std::string, tokenType> wordTokenTypeMap = {
     {"takeprofit", tokenType::_takeprofit},
     {"broker", tokenType::_broker},
 
-    {"=", tokenType::Assign},
-    {"(", tokenType::LeftParen},
-    {")", tokenType::RightParen},
-    {",", tokenType::Comma},
-    {"%", tokenType::Percent},
     {"<", tokenType::LessThan},
     {">", tokenType::GreaterThan},
     {"<=", tokenType::LessThanEQ},
     {">=", tokenType::GreaterThanEQ},
-    {"!=", tokenType::NotEQ}
+    {"!=", tokenType::NotEQ},
+    
+    {"\n", tokenType::NewLine},
+    {"\0", tokenType::EndOfFile}
 };
