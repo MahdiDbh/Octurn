@@ -21,12 +21,9 @@ inline std::unordered_map<std::string, tokenType> wordTokenTypeMap = {
     {"stoploss", tokenType::_stoploss},
     {"takeprofit", tokenType::_takeprofit},
     {"broker", tokenType::_broker},
-
-    {"<", tokenType::LessThan},
-    {">", tokenType::GreaterThan},
-    {"<=", tokenType::LessThanEQ},
-    {">=", tokenType::GreaterThanEQ},
-    {"!=", tokenType::NotEQ},
+    {"range", tokenType::_range},
+    {"stop", tokenType::_stop},
+    {"take", tokenType::_take},
     
     {"\n", tokenType::NewLine},
     {"\0", tokenType::EndOfFile}

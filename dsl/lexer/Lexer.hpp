@@ -18,7 +18,6 @@ enum class status {
 
 class Lexer {
     private:
-        std::vector<Token> tokens_;
         std::string input_;
         position position_;
         status status_;
@@ -34,5 +33,6 @@ class Lexer {
     public:
         Lexer(std::string_view rawTxt);
         void tokenize();
+        std::vector<Token> tokens;
 };
 

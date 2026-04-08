@@ -30,15 +30,13 @@ enum class tokenType{
     // COMPARISON OPERATORS
     LessThan,
     GreaterThan,
-    LessThanEQ,
-    GreaterThanEQ,
-    NotEQ,
-
 
     // KEYWORDS
     _strategy,
     _slippage,
     _mode,
+    _stop,
+    _take,
     _market,
     _session,
     _capital,
@@ -48,5 +46,6 @@ enum class tokenType{
     _brokerfee,
     _stoploss,
     _takeprofit,
-    _broker
+    _broker,
+    _range
 };
