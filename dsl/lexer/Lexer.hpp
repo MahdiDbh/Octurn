@@ -17,22 +17,22 @@ enum class status {
 };
 
 class Lexer {
-private:
-    std::vector<Token> tokens_;
-    std::string input_;
-    position position_;
-    status status_;
+    private:
+        std::vector<Token> tokens_;
+        std::string input_;
+        position position_;
+        status status_;
 
+        char currentSymbol_();
 
-    void scanToken_();
-    char currentSymbol_();
-    void skipSpaces_();
-    void newLineCheck_();
-    void parseWord_(std::string& word);
-    void Lexer::advance_();
-    void Lexer::parseNumber_(std::string& word);
-public:
-    Lexer(std::string_view rawTxt);
-    void tokenize();
+        void scanToken_();
+        void skipSpaces_();
+        void newLineCheck_();
+        void parseWord_(std::string& word);
+        void advance_();
+        void parseNumber_(std::string& word);
+    public:
+        Lexer(std::string_view rawTxt);
+        void tokenize();
 };
 
