@@ -23,19 +23,24 @@ class Lexer {
         status status_;
 
         char currentSymbol_();
+        void advance_();
+        void emit_(tokenType type, const std::string& lexeme, std::size_t line, std::size_t col);
 
         void scanToken_();
         void skipSpaces_();
         void newLineCheck_();
+
         void parseWord_(std::string& word);
-        void advance_();
         void parseNumber_(std::string& word);
         void parseString_(std::string& word);
         void parseDate_(std::string& word);
-        bool isDateBegin_();
         void parseTimeframe_(std::string& word);
+        void parsePercent_(std::string& word);
+
+        bool isDate_();
         bool isTimeframe_();
-        void emit_(tokenType type, const std::string& lexeme, std::size_t line, std::size_t col);
+        bool isNumber_();
+        bool isPercent_();
     public:
         Lexer(std::string_view rawTxt);
         void tokenize();

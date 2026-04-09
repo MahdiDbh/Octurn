@@ -55,9 +55,10 @@ void Lexer::scanToken_(){
     }
 
     if (std::isdigit((unsigned char)c)){
-        if (isDateBegin_()) {parseDate_(word);emit_(tokenType::_date,word,startLine,startCol); return;}
-        if (isTimeframe_()) {parseTimeframe_(word);emit_(tokenType::Timeframe,word,startLine,startCol); return;}
-        parseNumber_(word); emit_(tokenType::Number, word, startLine, startCol); return;
+        if (isDate_()) {parseDate_(word); emit_(tokenType::Date,word,startLine,startCol); return;}
+        if (isTimeframe_()) {parseTimeframe_(word); emit_(tokenType::Timeframe,word,startLine,startCol); return;}
+        if (isPercent_()) {parsePercent_(word); emit_(tokenType::Percent,word,startLine,startCol); return;}
+        if (isNumber_()) {parseNumber_(word); emit_(tokenType::Number, word, startLine, startCol); return;}
     }
 
     tokenType op = switcher::matchOpPunctType(c);

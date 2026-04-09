@@ -39,11 +39,11 @@ bool Lexer::isTimeframe_(){
 
     size_t k = j + 1;
     if (k < n && (std::isalnum((unsigned char)input_[k]) || input_[k] == '_')) return false;
-    
+
     return true;
 }
 
-bool Lexer::isDateBegin_(){
+bool Lexer::isDate_(){
     size_t i = position_.txtIdx;
     if (i + 9 >= input_.size()) return false;
     for (int k=0; k<4;k++) if (!std::isdigit((unsigned char)input_[i+k])) return false;
@@ -64,6 +64,75 @@ void Lexer::parseString_(std::string& word){
     if (c == '"'){
         advance_();
     }
+}
+
+bool Lexer::isNumber_(){
+    size_t pos{position_.txtIdx};
+    size_t n = input_.size();
+
+    while (pos < n && std::isdigit((unsigned char)input_[pos])){
+        pos++;
+    }
+
+    if (pos == position_.txtIdx) return false;
+
+    if (pos < n && input_[pos] == '.'){
+        pos++;
+        if (pos >= n || !std::isdigit((unsigned char)input_[pos])) return false;
+        while (pos < n && std::isdigit((unsigned char)input_[pos])){
+            pos++;
+        }
+    }
+
+    return true;
+}
+
+bool Lexer::isPercent_(){
+    size_t pos{position_.txtIdx};
+    size_t n = input_.size();
+    
+    while (pos < input_.size() && std::isdigit((unsigned char)input_[pos])){
+        pos++;
+    }
+
+    if (pos == position_.txtIdx) return false;
+
+    if (pos < n && input_[pos] == '.'){
+        pos++;
+        if (pos >= n || !std::isdigit((unsigned char)input_[pos])) return false;
+        while (pos < n && std::isdigit((unsigned char)input_[pos])){
+            pos++;
+        }
+    }
+
+    if (pos >= n || input_[pos] != '%') return false;
+
+    return true;
+}
+
+void Lexer::parsePercent_(std::string& word){
+    char c = currentSymbol_();
+    while (std::isdigit((unsigned char)c)) {
+        word.push_back(c);
+        advance_();
+        c = currentSymbol_();
+    }
+
+    if (c == '.'){
+        const auto nextIdx = position_.txtIdx + 1;
+        if (nextIdx < input_.size() && std::isdigit((unsigned char)input_[nextIdx])){
+            word.push_back(c);
+            advance_();
+            c = currentSymbol_();
+            while (std::isdigit((unsigned char)c)) {
+                word.push_back(c);
+                advance_();
+                c = currentSymbol_();
+            }
+        }
+    }
+    word.push_back(currentSymbol_());
+    advance_();
 }
 
 void Lexer::parseNumber_(std::string& word){
