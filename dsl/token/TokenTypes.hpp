@@ -47,5 +47,8 @@ enum class tokenType{
     _stoploss,
     _takeprofit,
     _broker,
-    _range
+    _range,
+    _date,
+    _dailyMaxLoss,
+    _maxAccountLoss
 };

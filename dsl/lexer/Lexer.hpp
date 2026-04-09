@@ -31,9 +31,21 @@ class Lexer {
         void advance_();
         void parseNumber_(std::string& word);
         void parseString_(std::string& word);
+        void parseDate_(std::string& word);
+        bool isDateBegin_();
+        void parseTimeframe_(std::string& word);
+        bool isTimeframe_();
         void emit_(tokenType type, const std::string& lexeme, std::size_t line, std::size_t col);
     public:
         Lexer(std::string_view rawTxt);
         void tokenize();
         std::vector<Token> tokens;
 };
+
+namespace switcher {
+    tokenType matchOpPunctType(char symbol);
+}
+
+namespace wordMatcher {
+    tokenType matchWordType(const std::string& word);
+}
