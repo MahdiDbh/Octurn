@@ -30,9 +30,10 @@ class Lexer {
         void parseWord_(std::string& word);
         void advance_();
         void parseNumber_(std::string& word);
+        void parseString_(std::string& word);
+        void emit_(tokenType type, const std::string& lexeme, std::size_t line, std::size_t col);
     public:
         Lexer(std::string_view rawTxt);
         void tokenize();
         std::vector<Token> tokens;
 };
-

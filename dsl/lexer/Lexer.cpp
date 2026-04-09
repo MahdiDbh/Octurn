@@ -30,35 +30,40 @@ char Lexer::currentSymbol_(){
 }
 
 void Lexer::scanToken_(){
+    const auto startLine = position_.row;
+    const auto startCol = position_.column;
     char c = currentSymbol_();
     if (c == '\0') {
         status_ = status::over;
-        tokens.emplace_back(Token{.lexeme = "", .col = position_.column, .line = position_.row, .type = tokenType::EndOfFile});
+        emit_(tokenType::EndOfFile, "", startLine, startCol);
+        return;
+    }
+
+    if (c == '"'){
+        advance_();
+        std::string word;
+        parseString_(word);
+        emit_(tokenType::String, word, startLine, startCol);
         return;
     }
 
     if (std::isalpha((unsigned char)c) || c == '_') {
-        const auto startLine = position_.row;
-        const auto startCol = position_.column;
         std::string word;
         parseWord_(word);
         tokenType type = wordMatcher::matchWordType(word);
-        tokens.emplace_back(Token{.lexeme = word, .col = startCol, .line = startLine, .type = type});
+        emit_(type, word, startLine, startCol);
         return;
     }
 
     if (std::isdigit((unsigned char)c)){
-        const auto startLine = position_.row;
-        const auto startCol = position_.column;
         std::string number;
         parseNumber_(number);
-        tokens.emplace_back(Token{.lexeme = number, .col = startCol,
-                                   .line = startLine, .type = tokenType::Number});
+        emit_(tokenType::Number, number, startLine, startCol);
         return;
     }
 
     tokenType op = switcher::matchOpPunctType(c);
-    tokens.emplace_back(Token{.lexeme = std::string(1, c), .col = position_.column, .line = position_.row, .type = op});
+    emit_(op, std::string(1, c), startLine, startCol);
     advance_();
 }
 
@@ -96,6 +101,23 @@ void Lexer::parseWord_(std::string& word){
         advance_();
         c = currentSymbol_();
     }
+}
+
+
+void Lexer::parseString_(std::string& word){
+    char c = currentSymbol_();
+    while (c != '"' && c != '\0'){
+        word.push_back(currentSymbol_());
+        advance_();
+        c = currentSymbol_();
+    }
+    if (c == '"'){
+        advance_();
+    }
+}
+
+void Lexer::emit_(tokenType type, const std::string& lexeme, std::size_t line, std::size_t col){
+    tokens.emplace_back(Token{.lexeme = lexeme, .col = col, .line = line, .type = type});
 }
 
 void Lexer::parseNumber_(std::string& word){
