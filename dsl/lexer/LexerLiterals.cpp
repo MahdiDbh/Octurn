@@ -1,3 +1,4 @@
+#include <cctype>
 #include "Lexer.hpp"
 
 void Lexer::parseDate_(std::string& word){

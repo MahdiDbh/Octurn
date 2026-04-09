@@ -1,3 +1,4 @@
+#include <cctype>
 #include "Lexer.hpp"
 
 void Lexer::skipSpaces_(){

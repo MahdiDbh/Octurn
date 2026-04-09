@@ -1,3 +1,5 @@
+#include <cctype>
+
 #include "Lexer.hpp"
 
 namespace switcher {
