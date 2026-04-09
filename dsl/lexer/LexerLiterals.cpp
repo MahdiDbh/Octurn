@@ -111,26 +111,10 @@ bool Lexer::isPercent_(){
 }
 
 void Lexer::parsePercent_(std::string& word){
-    char c = currentSymbol_();
-    while (std::isdigit((unsigned char)c)) {
-        word.push_back(c);
-        advance_();
-        c = currentSymbol_();
-    }
-
-    if (c == '.'){
-        const auto nextIdx = position_.txtIdx + 1;
-        if (nextIdx < input_.size() && std::isdigit((unsigned char)input_[nextIdx])){
-            word.push_back(c);
-            advance_();
-            c = currentSymbol_();
-            while (std::isdigit((unsigned char)c)) {
-                word.push_back(c);
-                advance_();
-                c = currentSymbol_();
-            }
-        }
-    }
+    parseNumber_(word);
+    
+    if (currentSymbol_() != '%') return;
+    
     word.push_back(currentSymbol_());
     advance_();
 }
