@@ -10,7 +10,7 @@ void Lexer::parseDate_(std::string& word){
 
 void Lexer::parseTimeframe_(std::string& word){
     char c = currentSymbol_();
-    while (std::isdigit(c)){
+    while (std::isdigit((unsigned char)c)){
         word.push_back(c);
         advance_();
         c = currentSymbol_();
@@ -34,9 +34,13 @@ bool Lexer::isTimeframe_(){
     if (j == i) return false;
     if (j >= n) return false;
 
-    char unit = input_[j];
+    char unit = (char)std::tolower((unsigned char)input_[j]);
+    if (!(unit == 'w' || unit == 'd' || unit == 'h' || unit == 'm')) return false;
 
-    return unit == 'w' || unit == 'd' || unit == 'h' || unit == 'm';
+    size_t k = j + 1;
+    if (k < n && (std::isalnum((unsigned char)input_[k]) || input_[k] == '_')) return false;
+    
+    return true;
 }
 
 bool Lexer::isDateBegin_(){
@@ -84,4 +88,3 @@ void Lexer::parseNumber_(std::string& word){
         }
     }
 }
-
