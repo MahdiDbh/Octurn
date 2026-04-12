@@ -1,9 +1,10 @@
 #pragma once
-
 #include <string>
 #include <unordered_map>
 
-enum mode {
-    live,
-    backtest
+enum session {
+    London,
+    NewYork,
+    Tokyo,
+    All
 };
