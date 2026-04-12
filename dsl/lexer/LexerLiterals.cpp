@@ -55,6 +55,7 @@ bool Lexer::isDate_(){
 }
 
 void Lexer::parseString_(std::string& word){
+    advance_();
     char c = currentSymbol_();
     while (c != '"' && c != '\0'){
         word.push_back(currentSymbol_());
@@ -112,7 +113,7 @@ bool Lexer::isPercent_(){
 
 void Lexer::parsePercent_(std::string& word){
     parseNumber_(word);
-    
+
     if (currentSymbol_() != '%') return;
     
     word.push_back(currentSymbol_());
