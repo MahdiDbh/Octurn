@@ -11,4 +11,5 @@
 namespace Octurn {
     using value = std::optional<std::variant<std::string,execution,session,mode>>;
     using validationFn = std::function<bool()>;
+    using percent = double;
 }

@@ -7,11 +7,11 @@
 #include "dsl/fields/session/sessionByName.hpp"
 #include "dsl/fields/session/session.hpp"
 
-validationCtx validateMode = {
+validationCtx validateSession = {
     .token = tokenType::_session,
     .required = false,
     .defvalue = session::All,
     .fn = []()->bool{
-        return sessionByName.find(validateMode.value) != sessionByName.end();
+        return sessionByName.find(validateSession.value) != sessionByName.end();
     }
 };
