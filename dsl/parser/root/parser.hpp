@@ -1,6 +1,7 @@
 #include <vector>
 #include "dsl/token/Token.hpp"
 #include "dsl/parser/strategy/strategy.hpp"
+#include "dsl/parser/config/config.hpp"
 class parser {
     private:
         std::unique_ptr<Strategy> root_;
