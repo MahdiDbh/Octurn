@@ -18,7 +18,7 @@ struct config {
     Octurn::percent brokerfee;
     Octurn::percent maxAccountLoss;
     Octurn::percent dailyMaxLoss;
-    Octurn::percent dailyMaxLoss;
+    Octurn::percent risk;
 
     double capital;
 };
