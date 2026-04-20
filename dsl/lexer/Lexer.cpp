@@ -41,7 +41,6 @@ void Lexer::scanToken_(){
     }
 
     if (c == '"'){
-        advance_();
         parseString_(word);
         emit_(tokenType::String, word, startLine, startCol);
         return;

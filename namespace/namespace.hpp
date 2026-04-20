@@ -5,8 +5,10 @@
 #include "dsl/fields/execution/execution.hpp"
 #include "dsl/fields/session/session.hpp"
 #include "dsl/fields/mode/mode.hpp"
+#include "dsl/validator/ctx/ValidationCtx.hpp"
+#include "dsl/token/Token.hpp"
 
 namespace Octurn {
-    using value = std::variant<std::string,execution,session,mode>;
-    using validationFn = std::function<bool,()>
+    using value = std::optional<std::variant<std::string,execution,session,mode>>;
+    using validationFn = std::function<bool()>;
 }

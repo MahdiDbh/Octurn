@@ -4,6 +4,8 @@
 
 struct validationCtx {
     tokenType token;
-    Octurn::value value;
-    
-}
+    std::string value;
+    Octurn::value defvalue;
+    Octurn::validationFn fn;
+    bool required;
+};

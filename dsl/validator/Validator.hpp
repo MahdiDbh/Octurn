@@ -2,13 +2,11 @@
 #include <string>
 #include <unordered_map>
 #include "dsl/token/TokenTypes.hpp"
+#include "namespace/namespace.hpp"
 
 class Validator{
-
-private:
-    using ValidatorFn = std::unordered_map<tokenType,std::function<bool>>
 public:
-    
+    std::unordered_map<tokenType,Octurn::validationFn> validateByToken;
 };
 
 
